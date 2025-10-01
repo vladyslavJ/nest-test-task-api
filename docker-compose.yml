@@ -7,7 +7,7 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/notion?schema=public
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/notion
       - JWT_SECRET=your_dev_secret
     volumes:
       - .:/app
@@ -32,7 +32,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/notion?schema=public
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/notion
     # Команда значно спростилася. Вона просто запускає скрипт з package.json
     volumes:
       - .:/app

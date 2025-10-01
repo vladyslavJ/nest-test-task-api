@@ -1,3 +1,4 @@
+import { Inject } from '@nestjs/common'
 import { eq, and, SQL, sql } from 'drizzle-orm'
 import { BaseRepository } from './base.repository'
 import { notes, Note, NewNote } from '../schemas'
@@ -20,7 +21,7 @@ export interface FindNotesResult {
 
 // Конкретна реалізація репозиторію для нотаток
 export class NotesRepository extends BaseRepository<Note, NewNote> {
-  constructor(db: Database) {
+  constructor(@Inject('DATABASE') db: Database) {
     super(db)
   }
 

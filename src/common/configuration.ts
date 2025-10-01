@@ -7,7 +7,7 @@ export default () => ({
     database: process.env.POSTGRES_DB || 'notion',
     url:
       process.env.DATABASE_URL ||
-      'postgresql://postgres:postgres@postgres:5432/notion?schema=public',
+      'postgresql://postgres:postgres@postgres:5432/notion',
   },
   jwt: {
     secret: process.env.JWT_SECRET || 'secret',

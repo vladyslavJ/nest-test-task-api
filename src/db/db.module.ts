@@ -14,28 +14,26 @@ import configuration from '../common/configuration'
   ],
   providers: [
     {
-      provide: 'DATABASE_CONNECTION',
+      provide: 'DATABASE',
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const dbConfig = {
-          url:
-            configService.get<string>('DATABASE_URL') ||
-            'postgresql://postgres:postgres@localhost:5432/nest_test_task',
+          url: configService.get<string>('postgres.url'),
         }
         return createDbConnection(dbConfig)
       },
     },
     {
       provide: UsersRepository,
-      inject: ['DATABASE_CONNECTION'],
+      inject: ['DATABASE'],
       useFactory: db => new UsersRepository(db),
     },
     {
       provide: NotesRepository,
-      inject: ['DATABASE_CONNECTION'],
+      inject: ['DATABASE'],
       useFactory: db => new NotesRepository(db),
     },
   ],
-  exports: [UsersRepository, NotesRepository],
+  exports: [UsersRepository, NotesRepository, 'DATABASE'],
 })
 export class DbModule {}

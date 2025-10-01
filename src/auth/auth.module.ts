@@ -6,17 +6,19 @@ import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtStrategy } from './strategies/jwt.strategy'
+import { DbModule } from '../db/db.module'
 
 @Module({
   imports: [
+    DbModule,
     UsersModule,
     PassportModule,
     ConfigModule, // Переконайтесь, що ConfigModule імпортовано глобально в app.module.ts
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '60m' },
+        secret: configService.get<string>('jwt.secret'),
+        signOptions: { expiresIn: configService.get('jwt.expiresIn', '60m') },
       }),
       inject: [ConfigService],
     }),

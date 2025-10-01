@@ -1,3 +1,4 @@
+import { Inject } from '@nestjs/common'
 import { eq, ilike, and, SQL, sql } from 'drizzle-orm'
 import { BaseRepository } from './base.repository'
 import { users, User, NewUser } from '../schemas'
@@ -11,7 +12,7 @@ export interface FindUsersOptions {
 
 // Конкретна реалізація репозиторію для користувачів
 export class UsersRepository extends BaseRepository<User, NewUser> {
-  constructor(db: Database) {
+  constructor(@Inject('DATABASE') db: Database) {
     super(db)
   }
 
