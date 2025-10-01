@@ -1,0 +1,70 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/notion?schema=public
+      - JWT_SECRET=your_dev_secret
+    volumes:
+      - .:/app
+      - /app/node_modules
+    # Запускається тільки після успішного завершення міграцій
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+    # Команда спрощена, тепер вона тільки запускає сервер
+    command: npm run start:dev
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # Новий контейнер для запуску міграцій
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/notion?schema=public
+    # Команда значно спростилася. Вона просто запускає скрипт з package.json
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run db:migrate
+    restart: 'no'
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=notion
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d notion']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data_dev:
