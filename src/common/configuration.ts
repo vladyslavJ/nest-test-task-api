@@ -9,4 +9,8 @@ export default () => ({
       process.env.DATABASE_URL ||
       'postgresql://postgres:postgres@postgres:5432/notion?schema=public',
   },
+  jwt: {
+    secret: process.env.JWT_SECRET || 'secret',
+    expiresIn: '60m',
+  },
 })

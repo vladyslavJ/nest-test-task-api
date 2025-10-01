@@ -8,7 +8,7 @@ import { UsersService } from '../users/users.service'
 import * as bcrypt from 'bcryptjs'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { LoginUserDto } from './dto/login-user.dto'
-import { UserRole } from '../db/schemas/users.schema'
+import { userRoles } from '../db/schemas/users.schema'
 
 @Injectable()
 export class AuthService {
@@ -30,7 +30,7 @@ export class AuthService {
     const newUser = await this.usersService.create({
       ...registerUserDto,
       password: hashedPassword,
-      role: UserRole.USER, // За замовчуванням роль USER
+      role: userRoles.USER, // За замовчуванням роль USER
     })
 
     // Не повертаємо пароль
