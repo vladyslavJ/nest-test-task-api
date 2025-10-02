@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common'
-import { eq, and, SQL, sql } from 'drizzle-orm'
+import { eq, SQL, sql } from 'drizzle-orm'
 import { BaseRepository } from './base.repository'
 import { notes, Note, NewNote } from '../schemas'
 import { Database } from '../connection'

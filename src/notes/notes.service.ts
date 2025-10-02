@@ -3,11 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common'
-import {
-  NotesRepository,
-  PaginationOptions,
-  FindNotesResult,
-} from '../db/repo/notes.repository'
+import { NotesRepository, FindNotesResult } from '../db/repo/notes.repository'
 import { Note, NewNote, userRoles } from '../db/schemas'
 import { CreateNoteDto } from './dto/create-note.dto'
 import { UpdateNoteDto } from './dto/update-note.dto'

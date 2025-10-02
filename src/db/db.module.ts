@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { createDbConnection, getDatabaseConfig } from './index'
+import { createDbConnection } from './index'
 import { UsersRepository, NotesRepository } from './repo'
 import configuration from '../common/configuration'
 

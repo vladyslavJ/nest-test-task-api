@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common'
-import { UsersRepository, FindUsersOptions } from '../db/repo/users.repository'
+import { UsersRepository } from '../db/repo/users.repository'
 import { User, NewUser, userRoles, users } from '../db/schemas'
 import * as bcrypt from 'bcryptjs'
 import { FilterUsersDto } from './dto/filter-users.dto'
@@ -100,7 +100,7 @@ export class UsersService {
   }
 
   async blockUser(id: number, isBlocked: boolean): Promise<User> {
-    const user = await this.findById(id)
+    // const user = await this.findById(id)
     const updatedUser = await this.usersRepository.blockUser(id, isBlocked)
 
     if (!updatedUser) {

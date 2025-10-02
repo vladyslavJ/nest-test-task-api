@@ -9,7 +9,6 @@ import {
   UseGuards,
   Query,
   ParseIntPipe,
-  UsePipes,
 } from '@nestjs/common'
 import { NotesService } from './notes.service'
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -37,7 +36,7 @@ export class NotesController {
   @Post()
   @ApiOperation({ summary: 'Create a new note' })
   @ApiResponse({ status: 201, description: 'Note created successfully' })
-  //@UsePipes(new ZodValidationPipe(createNoteSchema))
+  // @UsePipes(new ZodValidationPipe(createNoteSchema))
   async create(
     @Body(new ZodValidationPipe(createNoteSchema)) createNoteDto: CreateNoteDto,
     @CurrentUser() user: Partial<User>,
@@ -50,7 +49,7 @@ export class NotesController {
   @ApiResponse({ status: 200, description: 'Returns notes with pagination' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  //@UsePipes(new ZodValidationPipe(paginationSchema))
+  // @UsePipes(new ZodValidationPipe(paginationSchema))
   async findAll(
     @Query(new ZodValidationPipe(paginationSchema))
     paginationDto: PaginationDto,
@@ -75,7 +74,7 @@ export class NotesController {
   @ApiResponse({ status: 200, description: 'Returns updated note' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 404, description: 'Note not found' })
-  //@UsePipes(new ZodValidationPipe(updateNoteSchema))
+  // @UsePipes(new ZodValidationPipe(updateNoteSchema))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ZodValidationPipe(updateNoteSchema)) updateNoteDto: UpdateNoteDto,

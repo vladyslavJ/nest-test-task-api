@@ -1,12 +1,13 @@
-import { SQL, sql } from 'drizzle-orm'
+import { SQL } from 'drizzle-orm'
+import { PgTable } from 'drizzle-orm/pg-core'
 import { Database } from '../connection'
 
 // Абстрактний базовий клас для репозиторіїв (слідуючи принципу DIP)
 export abstract class BaseRepository<T, U> {
   constructor(protected readonly db: Database) {}
 
-  // Абстрактний метод, який повинен бути реалізований в похідних класах
-  abstract getTable(): any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  abstract getTable(): PgTable<any>
 
   // Основні CRUD операції
   async findAll(where?: SQL<boolean>): Promise<T[]> {
@@ -30,7 +31,7 @@ export abstract class BaseRepository<T, U> {
     const table = this.getTable()
     const result = await this.db.insert(table).values(data).returning()
 
-    return result[0]
+    return result[0] as T
   }
 
   async update(where: SQL<boolean>, data: Partial<U>): Promise<T | undefined> {
@@ -48,6 +49,6 @@ export abstract class BaseRepository<T, U> {
     const table = this.getTable()
     const result = await this.db.delete(table).where(where).returning()
 
-    return result[0]
+    return result[0] as T | undefined
   }
 }

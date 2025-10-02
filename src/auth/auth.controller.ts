@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UsePipes,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common'
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { RegisterUserDto, registerUserSchema } from './dto/register-user.dto'
 import { LoginUserDto, loginUserSchema } from './dto/login-user.dto'
@@ -25,7 +18,7 @@ export class AuthController {
     status: 409,
     description: 'Conflict. User with this email already exists.',
   })
-  //@UsePipes(new ZodValidationPipe(registerUserSchema))
+  // @UsePipes(new ZodValidationPipe(registerUserSchema))
   async register(
     @Body(new ZodValidationPipe(registerUserSchema))
     registerUserDto: RegisterUserDto,
@@ -42,7 +35,7 @@ export class AuthController {
     schema: { example: { accessToken: 'string' } },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  //@UsePipes(new ZodValidationPipe(loginUserSchema))
+  // @UsePipes(new ZodValidationPipe(loginUserSchema))
   async login(
     @Body(new ZodValidationPipe(loginUserSchema)) loginUserDto: LoginUserDto,
   ) {

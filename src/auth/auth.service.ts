@@ -34,7 +34,7 @@ export class AuthService {
     })
 
     // Не повертаємо пароль
-    const { password, ...result } = newUser
+    const { ...result } = newUser
     return result
   }
 

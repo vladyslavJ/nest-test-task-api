@@ -28,7 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // Пароль не повертаємо, Drizzle це зробить за нас при правильному select
-    const { password, ...result } = user
+    const { ...result } = user
     return result
   }
 }
