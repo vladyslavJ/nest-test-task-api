@@ -65,10 +65,10 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Returns updated user' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  @UsePipes(new ZodValidationPipe(updateUserSchema))
+  //@UsePipes(new ZodValidationPipe(updateUserSchema))
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
     @CurrentUser() currentUser: Partial<User>,
   ): Promise<User> {
     return this.usersService.update(
@@ -97,10 +97,10 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Returns updated user' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  @UsePipes(new ZodValidationPipe(blockUserSchema))
+  //@UsePipes(new ZodValidationPipe(blockUserSchema))
   async blockUser(
     @Param('id', ParseIntPipe) id: number,
-    @Body() blockUserDto: BlockUserDto,
+    @Body(new ZodValidationPipe(blockUserSchema)) blockUserDto: BlockUserDto,
   ): Promise<User> {
     return this.usersService.blockUser(id, blockUserDto.isBlocked)
   }
