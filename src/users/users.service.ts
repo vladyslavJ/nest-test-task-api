@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common'
 import { UsersRepository, FindUsersOptions } from '../db/repo/users.repository'
 import { User, NewUser, userRoles, users } from '../db/schemas'
@@ -49,6 +50,13 @@ export class UsersService {
 
     const user = await this.findById(id)
 
+    if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const existingUser = await this.findByEmail(updateUserDto.email)
+      if (existingUser && existingUser.id !== id) {
+        throw new ConflictException('User with this email already exists')
+      }
+    }
+
     // Підготовка даних для оновлення
     const updateData: Partial<NewUser> = { ...updateUserDto }
 
@@ -78,7 +86,10 @@ export class UsersService {
     return updatedUser
   }
 
-  async remove(id: number): Promise<User> {
+  async remove(id: number, currentUserId: number): Promise<User> {
+    if (id === currentUserId) {
+      throw new ForbiddenException('You cannot delete your own account.')
+    }
     const deletedUser = await this.usersRepository.delete(
       eq(users.id, id) as SQL<boolean>,
     )

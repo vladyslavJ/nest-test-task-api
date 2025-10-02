@@ -28,6 +28,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger'
+import { filterUsersSchema } from './dto/filter-users.dto'
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -37,9 +38,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @Roles(userRoles.ADMIN)
+  @UseGuards(RolesGuard)
   @ApiOperation({ summary: 'Get all users with optional filtering' })
   @ApiResponse({ status: 200, description: 'Returns array of users' })
-  async findAll(@Query() filters: FilterUsersDto): Promise<User[]> {
+  async findAll(
+    @Query(new ZodValidationPipe(filterUsersSchema)) filters: FilterUsersDto,
+  ): Promise<User[]> {
     return this.usersService.findAll(filters)
   }
 
@@ -86,8 +91,11 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Returns deleted user' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.remove(id)
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: Partial<User>,
+  ): Promise<User> {
+    return this.usersService.remove(id, currentUser.id)
   }
 
   @Patch(':id/block')
