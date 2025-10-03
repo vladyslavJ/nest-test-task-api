@@ -27,8 +27,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('User is blocked')
     }
 
-    // Пароль не повертаємо, Drizzle це зробить за нас при правильному select
-    const { ...result } = user
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = user
     return result
   }
 }
