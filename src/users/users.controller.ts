@@ -20,6 +20,7 @@ import { UpdateUserDto, updateUserSchema } from './dto/update-user.dto'
 import { FilterUsersDto } from './dto/filter-users.dto'
 import { BlockUserDto, blockUserSchema } from './dto/block-user.dto'
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe'
+import { UserAccessGuard } from './guards/user-access.guard'
 import {
   ApiTags,
   ApiOperation,
@@ -47,6 +48,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(UserAccessGuard)
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({ status: 200, description: 'Returns the user' })
   @ApiResponse({ status: 404, description: 'User not found' })
@@ -63,6 +65,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(UserAccessGuard)
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, description: 'Returns updated user' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
@@ -72,12 +75,7 @@ export class UsersController {
     @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
     @CurrentUser() currentUser: Partial<User>,
   ): Promise<User> {
-    return this.usersService.update(
-      id,
-      updateUserDto,
-      currentUser.id,
-      currentUser.role,
-    )
+    return this.usersService.update(id, updateUserDto, currentUser)
   }
 
   @Delete(':id')

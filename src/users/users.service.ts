@@ -40,13 +40,8 @@ export class UsersService {
   async update(
     id: number,
     updateUserDto: UpdateUserDto,
-    currentUserId: number,
-    currentUserRole: string,
+    currentUser: Partial<User>,
   ): Promise<User> {
-    if (currentUserRole !== userRoles.ADMIN && currentUserId !== id) {
-      throw new ForbiddenException('You are not authorized to update this user')
-    }
-
     const user = await this.findById(id)
 
     if (updateUserDto.email && updateUserDto.email !== user.email) {
@@ -64,7 +59,7 @@ export class UsersService {
 
     updateData.updatedAt = new Date()
 
-    if (currentUserRole !== userRoles.ADMIN) {
+    if (currentUser.role !== userRoles.ADMIN) {
       delete updateData.role
       delete updateData.isBlocked
     }
