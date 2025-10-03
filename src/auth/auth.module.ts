@@ -13,7 +13,7 @@ import { DbModule } from '../db/db.module'
     DbModule,
     UsersModule,
     PassportModule,
-    ConfigModule, // Переконайтесь, що ConfigModule імпортовано глобально в app.module.ts
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

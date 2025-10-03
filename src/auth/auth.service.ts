@@ -30,10 +30,9 @@ export class AuthService {
     const newUser = await this.usersService.create({
       ...registerUserDto,
       password: hashedPassword,
-      role: userRoles.USER, // За замовчуванням роль USER
+      role: userRoles.USER,
     })
 
-    // Не повертаємо пароль
     const { ...result } = newUser
     return result
   }

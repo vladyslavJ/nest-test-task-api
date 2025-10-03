@@ -43,7 +43,6 @@ export class UsersService {
     currentUserId: number,
     currentUserRole: string,
   ): Promise<User> {
-    // Перевірка прав: звичайний користувач може оновити тільки свій профіль
     if (currentUserRole !== userRoles.ADMIN && currentUserId !== id) {
       throw new ForbiddenException('You are not authorized to update this user')
     }
@@ -57,18 +56,14 @@ export class UsersService {
       }
     }
 
-    // Підготовка даних для оновлення
     const updateData: Partial<NewUser> = { ...updateUserDto }
 
-    // Якщо змінюється пароль, хешуємо його
     if (updateUserDto.password) {
       updateData.password = await bcrypt.hash(updateUserDto.password, 10)
     }
 
-    // Оновлюємо timestamp
     updateData.updatedAt = new Date()
 
-    // Звичайний користувач не може змінити роль або статус блокування
     if (currentUserRole !== userRoles.ADMIN) {
       delete updateData.role
       delete updateData.isBlocked
@@ -100,7 +95,6 @@ export class UsersService {
   }
 
   async blockUser(id: number, isBlocked: boolean): Promise<User> {
-    // const user = await this.findById(id)
     const updatedUser = await this.usersRepository.blockUser(id, isBlocked)
 
     if (!updatedUser) {

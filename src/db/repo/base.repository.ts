@@ -2,14 +2,12 @@ import { SQL } from 'drizzle-orm'
 import { PgTable } from 'drizzle-orm/pg-core'
 import { Database } from '../connection'
 
-// Абстрактний базовий клас для репозиторіїв (слідуючи принципу DIP)
 export abstract class BaseRepository<T, U> {
   constructor(protected readonly db: Database) {}
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abstract getTable(): PgTable<any>
 
-  // Основні CRUD операції
   async findAll(where?: SQL<boolean>): Promise<T[]> {
     const table = this.getTable()
 

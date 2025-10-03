@@ -4,13 +4,11 @@ import { BaseRepository } from './base.repository'
 import { notes, Note, NewNote } from '../schemas'
 import { Database } from '../connection'
 
-// Інтерфейс для опцій пагінації
 export interface PaginationOptions {
   page?: number
   limit?: number
 }
 
-// Інтерфейс для результату з пагінацією
 export interface FindNotesResult {
   items: Note[]
   total: number
@@ -19,7 +17,6 @@ export interface FindNotesResult {
   totalPages: number
 }
 
-// Конкретна реалізація репозиторію для нотаток
 export class NotesRepository extends BaseRepository<Note, NewNote> {
   constructor(@Inject('DATABASE') db: Database) {
     super(db)
@@ -29,12 +26,10 @@ export class NotesRepository extends BaseRepository<Note, NewNote> {
     return notes
   }
 
-  // Спеціалізовані методи для роботи з нотатками
   async findById(id: number): Promise<Note | undefined> {
     return this.findOne(eq(notes.id, id) as SQL<boolean>)
   }
 
-  // Метод для пошуку нотаток користувача з пагінацією
   async findByUserId(
     userId: number,
     options: PaginationOptions = {},
@@ -67,7 +62,6 @@ export class NotesRepository extends BaseRepository<Note, NewNote> {
     }
   }
 
-  // Метод для отримання всіх нотаток з пагінацією (для адміна)
   async findWithPagination(
     options: PaginationOptions = {},
   ): Promise<FindNotesResult> {

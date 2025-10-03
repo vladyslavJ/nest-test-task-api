@@ -6,6 +6,6 @@ import { UsersController } from './users.controller'
   imports: [],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService], // Експортуємо сервіс для AuthModule
+  exports: [UsersService],
 })
 export class UsersModule {}

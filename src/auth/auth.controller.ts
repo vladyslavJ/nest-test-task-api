@@ -18,7 +18,6 @@ export class AuthController {
     status: 409,
     description: 'Conflict. User with this email already exists.',
   })
-  // @UsePipes(new ZodValidationPipe(registerUserSchema))
   async register(
     @Body(new ZodValidationPipe(registerUserSchema))
     registerUserDto: RegisterUserDto,
@@ -35,7 +34,6 @@ export class AuthController {
     schema: { example: { accessToken: 'string' } },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  // @UsePipes(new ZodValidationPipe(loginUserSchema))
   async login(
     @Body(new ZodValidationPipe(loginUserSchema)) loginUserDto: LoginUserDto,
   ) {

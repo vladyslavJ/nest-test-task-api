@@ -4,13 +4,11 @@ import { BaseRepository } from './base.repository'
 import { users, User, NewUser } from '../schemas'
 import { Database } from '../connection'
 
-// Інтерфейс для опцій фільтрації користувачів
 export interface FindUsersOptions {
   name?: string
   isBlocked?: boolean
 }
 
-// Конкретна реалізація репозиторію для користувачів
 export class UsersRepository extends BaseRepository<User, NewUser> {
   constructor(@Inject('DATABASE') db: Database) {
     super(db)
@@ -20,7 +18,6 @@ export class UsersRepository extends BaseRepository<User, NewUser> {
     return users
   }
 
-  // Спеціалізовані методи для роботи з користувачами
   async findByEmail(email: string): Promise<User | undefined> {
     return this.findOne(eq(users.email, email) as SQL<boolean>)
   }
@@ -29,7 +26,6 @@ export class UsersRepository extends BaseRepository<User, NewUser> {
     return this.findOne(eq(users.id, id) as SQL<boolean>)
   }
 
-  // Метод для фільтрації користувачів за ім'ям та статусом блокування
   async findWithFilters(options: FindUsersOptions = {}): Promise<User[]> {
     const conditions: SQL<boolean>[] = []
 
@@ -48,7 +44,6 @@ export class UsersRepository extends BaseRepository<User, NewUser> {
     return this.findAll(and(...conditions) as SQL<boolean>)
   }
 
-  // Метод для блокування/розблокування користувача
   async blockUser(id: number, isBlocked: boolean): Promise<User | undefined> {
     return this.update(eq(users.id, id) as SQL<boolean>, { isBlocked })
   }

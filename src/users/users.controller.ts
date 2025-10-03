@@ -54,7 +54,6 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() currentUser: Partial<User>,
   ): Promise<User> {
-    // Звичайні користувачі можуть отримувати лише свій профіль
     if (currentUser.role !== userRoles.ADMIN && currentUser.id !== id) {
       throw new ForbiddenException(
         'You are not authorized to access this user data',
@@ -68,7 +67,6 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Returns updated user' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  // @UsePipes(new ZodValidationPipe(updateUserSchema))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ZodValidationPipe(updateUserSchema)) updateUserDto: UpdateUserDto,
@@ -103,7 +101,6 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Returns updated user' })
   @ApiResponse({ status: 403, description: 'Forbidden resource' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  // @UsePipes(new ZodValidationPipe(blockUserSchema))
   async blockUser(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ZodValidationPipe(blockUserSchema)) blockUserDto: BlockUserDto,

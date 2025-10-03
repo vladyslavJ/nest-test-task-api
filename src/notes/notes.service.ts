@@ -31,7 +31,6 @@ export class NotesService {
     userId: number,
     userRole: string,
   ): Promise<FindNotesResult> {
-    // Для адміна повертаємо всі нотатки, для звичайного користувача - тільки його
     if (userRole === userRoles.ADMIN) {
       return this.notesRepository.findWithPagination(paginationDto)
     }
@@ -46,7 +45,6 @@ export class NotesService {
       throw new NotFoundException(`Note with ID ${id} not found`)
     }
 
-    // Перевіряємо права доступу: адмін може переглядати всі нотатки, користувач - тільки свої
     if (userRole !== userRoles.ADMIN && note.userId !== userId) {
       throw new ForbiddenException(
         'You do not have permission to access this note',
@@ -62,10 +60,8 @@ export class NotesService {
     userId: number,
     userRole: string,
   ): Promise<Note> {
-    // Перевіряємо, чи існує нотатка і чи має користувач права для її оновлення
     const existingNote = await this.findOne(id, userId, userRole)
 
-    // Додаткова перевірка для користувача (не адміна)
     if (userRole !== userRoles.ADMIN && existingNote.userId !== userId) {
       throw new ForbiddenException(
         'You do not have permission to update this note',
@@ -90,10 +86,8 @@ export class NotesService {
   }
 
   async remove(id: number, userId: number, userRole: string): Promise<Note> {
-    // Перевіряємо, чи існує нотатка і чи має користувач права для її видалення
     const existingNote = await this.findOne(id, userId, userRole)
 
-    // Додаткова перевірка для користувача (не адміна)
     if (userRole !== userRoles.ADMIN && existingNote.userId !== userId) {
       throw new ForbiddenException(
         'You do not have permission to delete this note',
