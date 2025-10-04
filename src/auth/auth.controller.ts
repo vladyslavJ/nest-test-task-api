@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UsePipes,
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { RegisterUserDto, registerUserSchema } from './dto/register-user.dto'
 import { LoginUserDto, loginUserSchema } from './dto/login-user.dto'
@@ -11,6 +18,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @UsePipes(new ZodValidationPipe(registerUserSchema))
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'User successfully registered.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -19,13 +27,14 @@ export class AuthController {
     description: 'Conflict. User with this email already exists.',
   })
   async register(
-    @Body(new ZodValidationPipe(registerUserSchema))
+    @Body()
     registerUserDto: RegisterUserDto,
   ) {
     return this.authService.register(registerUserDto)
   }
 
   @Post('login')
+  @UsePipes(new ZodValidationPipe(loginUserSchema))
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Log in a user' })
   @ApiResponse({
@@ -34,9 +43,7 @@ export class AuthController {
     schema: { example: { accessToken: 'string' } },
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  async login(
-    @Body(new ZodValidationPipe(loginUserSchema)) loginUserDto: LoginUserDto,
-  ) {
+  async login(@Body() loginUserDto: LoginUserDto) {
     return this.authService.login(loginUserDto)
   }
 }
