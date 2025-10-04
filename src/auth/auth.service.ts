@@ -9,9 +9,11 @@ import * as bcrypt from 'bcryptjs'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { LoginUserDto } from './dto/login-user.dto'
 import { userRoles } from '../db/schemas/users.schema'
+import { AuthServiceInterface } from './interfaces/auth-service.interface'
+import { AUTH_EXCEPTION_COMMENTS } from '../common/utils/constants/auth.const'
 
 @Injectable()
-export class AuthService {
+export class AuthService implements AuthServiceInterface {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -22,37 +24,37 @@ export class AuthService {
       registerUserDto.email,
     )
     if (existingUser) {
-      throw new ConflictException('User with this email already exists')
+      throw new ConflictException(AUTH_EXCEPTION_COMMENTS.EMAIL_CONFLICT)
     }
 
     const hashedPassword = await bcrypt.hash(registerUserDto.password, 10)
 
-    const newUser = await this.usersService.create({
+    const user = await this.usersService.create({
       ...registerUserDto,
       password: hashedPassword,
       role: userRoles.USER,
     })
 
-    const { ...result } = newUser
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...result } = user
     return result
   }
 
   async login(loginUserDto: LoginUserDto) {
     const user = await this.usersService.findByEmail(loginUserDto.email)
-
     if (
       !user ||
       !(await bcrypt.compare(loginUserDto.password, user.password))
     ) {
-      throw new UnauthorizedException('Invalid credentials')
+      throw new UnauthorizedException(
+        AUTH_EXCEPTION_COMMENTS.INVALID_CREDENTIALS,
+      )
     }
-
     if (user.isBlocked) {
-      throw new UnauthorizedException('User is blocked')
+      throw new UnauthorizedException(AUTH_EXCEPTION_COMMENTS.USER_BLOCKED)
     }
 
     const payload = { email: user.email, sub: user.id, role: user.role }
-
     return {
       accessToken: this.jwtService.sign(payload),
     }
